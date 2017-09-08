@@ -1,0 +1,8 @@
+<div *ngIf="!loadingInProgress">
+  <h4> The time zone you are in is {{local_weather.timezone}} </h4>
+  <h4> Currently: it is {{local_weather.currently.temperature}} </h4>
+  <h4> It's {{local_weather.currently.summary}} outside </h4>
+</div>
+<div *ngIf='userBlockLocation'>
+  <h4> User has blooked location</h4>
+</div>
