@@ -1,4 +1,4 @@
-import { Component, ElementRef, NgZone, OnInit, ViewChild } from '@angular/core';
+import { Component, ElementRef, NgZone, OnInit, ViewChild, Input } from '@angular/core';
 import { FormControl, FormsModule, ReactiveFormsModule } from "@angular/forms";
 import { MapsAPILoader } from '@agm/core';
 import {} from '@types/googlemaps';
@@ -6,16 +6,13 @@ import {} from '@types/googlemaps';
 @Component({
   selector: 'location',
   styles: [],
-  template: `
-    <div class="container">
-      <input placeholder="Location" #search>
-    </div>
-  `
+  templateUrl: './location.component.html'
 })
 
 export class LocationComponent implements OnInit {
   private latitude: number;
   private longitude: number;
+  @Input() localAddress: string;
 
   @ViewChild("search")
   public searchElementRef: ElementRef;
@@ -30,30 +27,45 @@ export class LocationComponent implements OnInit {
       let autocomplete = new google.maps.places
         .Autocomplete(
           this.searchElementRef.nativeElement,
-          {types: ["(cities)"]}
+          {types: ['(cities)']}
         );
 
-      autocomplete.addListener("place_changed", () => {
+      this.getPosition();
+      console.log('moving')
+      autocomplete.addListener('place_changed', () => {
         this.ngZone.run(() => {
           let place: google.maps.places.PlaceResult = autocomplete.getPlace();
 
+          console.log(place)
+
           if (place.geometry === undefined || place.geometry === null) {
-            console.log(place)
             return;
-          }
+          };
         });
       });
     });
   }
 
-
   getPosition(): void {
+    let geocoder = new google.maps.Geocoder()
     if(navigator.geolocation){
-        navigator.geolocation
-          .getCurrentPosition(position =>{
-            this.latitude = position.coords.latitude
-            this.longitude = position.coords.longitude
-          });
-    };
+      navigator.geolocation.getCurrentPosition(position =>{
+        const latlng = new google.maps.LatLng(
+          position.coords.latitude,
+          position.coords.longitude
+        )
+        geocoder.geocode({ 'location': latlng}, (results, status) => {
+          if (status !== google.maps.GeocoderStatus.OK) {
+            alert(status);
+          }
+          if (status == google.maps.GeocoderStatus.OK) {
+            const city = results.filter(x => {return x.types.toString() == 'locality,political'})
+            if (city) {
+              this.localAddress = city[0].formatted_address
+            }
+          }
+        });
+      });
+    }
   };
 };

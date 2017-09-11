@@ -33,7 +33,6 @@ export class CurrentWeatherComponent implements OnInit {
               .then(data => {
                 this.local_weather = data
                 this.loadingInProgress = false
-                console.log(data)
               });
           },(error => {
             this.userBlockLocation = true;

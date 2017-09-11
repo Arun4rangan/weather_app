@@ -11,9 +11,7 @@ export class WeatherService {
   constructor(private http: Http) {};
 
   getWeather(latitude: number, longitude: number): Promise<any> {
-    console.log('works!')
     const url = `${this.weatherUrl}/${latitude},${longitude}`;
-    console.log(url)
     return this.http.get(url)
       .toPromise()
       .then(response => response.json())
