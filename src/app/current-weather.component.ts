@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 
 import { WeatherService } from './weather.service'
 
@@ -11,7 +11,7 @@ import 'rxjs/add/operator/switchMap';
   styleUrls: [],
 })
 
-export class CurrentWeatherComponent {
+export class CurrentWeatherComponent implements OnInit {
   weatherData: any={};
   loadingInProgress: boolean = true;
   userBlockLocation: boolean = false;
@@ -26,5 +26,12 @@ export class CurrentWeatherComponent {
         })
       });
     };
+
+  ngOnInit(){
+    this.weatherService.weatherDataPromise.then(data=>{
+      this.loadingInProgress = false;
+      this.weatherData=data
+    })
+  }
 
 };
