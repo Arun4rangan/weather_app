@@ -6,9 +6,14 @@ import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 
 import { AgmCoreModule } from '@agm/core';
 
+import { AppRoutingModule } from './app-routing.module'
+
+import { WeatherService } from './weather.service'
+
 import { AppComponent } from './app.component';
 import { CurrentWeatherComponent } from './current-weather.component'
 import { LocationComponent } from './location.component'
+import { WeekWeatherComponent } from './week-weather.component'
 
 @NgModule({
   imports: [
@@ -20,15 +25,18 @@ import { LocationComponent } from './location.component'
       apiKey: 'AIzaSyC6ZUP9zXPPFS7B5jcLf24kv2CrOA7xG94',
       libraries: ["places"]
     }),
+    AppRoutingModule,
     ReactiveFormsModule
   ],
   declarations: [
     AppComponent,
     CurrentWeatherComponent,
-    LocationComponent
+    LocationComponent,
+    WeekWeatherComponent
   ],
   providers: [
-    AppComponent
+    AppComponent,
+    WeatherService
   ],
   bootstrap: [AppComponent]
 })

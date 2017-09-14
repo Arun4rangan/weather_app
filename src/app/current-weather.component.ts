@@ -1,50 +1,30 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 
 import { WeatherService } from './weather.service'
 
 import 'rxjs/add/operator/map';
+import 'rxjs/add/operator/switchMap';
 
 @Component({
   selector: 'current-weather',
   templateUrl: './current-weather.component.html',
   styleUrls: [],
-  providers:[WeatherService]
 })
 
-export class CurrentWeatherComponent implements OnInit {
-  local_weather: any={};
+export class CurrentWeatherComponent {
+  weatherData: any={};
   loadingInProgress: boolean = true;
   userBlockLocation: boolean = false;
 
-  constructor(private weatherService: WeatherService) {};
-
-  ngOnInit(){
-    this.getPosition()
-  };
-
-
-  getPosition(): void {
-    if(navigator.geolocation){
-        navigator.geolocation
-          .getCurrentPosition(position =>{
-            const latitude = position.coords.latitude
-            const longitude = position.coords.longitude
-            this.weatherService.getWeather(latitude, longitude)
-              .then(data => {
-                this.local_weather = data
-                this.loadingInProgress = false
-              });
-          },(error => {
-            this.userBlockLocation = true;
-            this.handleError(error)
-          }));
-    } else {
-      console.log('This browser does not support geolocation')
+  constructor(
+    private weatherService: WeatherService
+    ) {
+      weatherService.changedWeather$.subscribe(weatherData => {
+        weatherData.then(data=> {
+          this.loadingInProgress = false;
+          this.weatherData=data
+        })
+      });
     };
-  };
 
-  private handleError(error:any): Promise<any>{
-    console.log('Error has occured', error)
-    return Promise.reject(error.message|| error)
-  };
 };

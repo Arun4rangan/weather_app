@@ -1,3 +1,7 @@
 <h1>{{title}}</h1>
-<location></location>
-<current-weather></current-weather>
+<location (weatherData) = "weatherDataHandler($event)"></location>
+<nav>
+  <a routerLink='/current' routerLinkActive='active'> Current Weather</a>
+  <a routerLink='/week-weather' routerLinkActive='active'> Week Weather </a>
+</nav>
+<router-outlet></router-outlet>

@@ -1,25 +1,31 @@
-import { Component, ElementRef, NgZone, OnInit, ViewChild, Input } from '@angular/core';
+import { Component, ElementRef, NgZone, OnInit, ViewChild, Output, EventEmitter } from '@angular/core';
+import { Router } from '@angular/router';
 import { FormControl, FormsModule, ReactiveFormsModule } from "@angular/forms";
+
+import { WeatherService } from './weather.service'
+
 import { MapsAPILoader } from '@agm/core';
 import {} from '@types/googlemaps';
 
 @Component({
   selector: 'location',
   styles: [],
-  templateUrl: './location.component.html'
+  templateUrl: './location.component.html',
 })
 
 export class LocationComponent implements OnInit {
-  private latitude: number;
-  private longitude: number;
-  @Input() localAddress: string;
+  private localAddress: string;
+  private latlng: any = {};
+  @Output() weatherData= new EventEmitter();
+
 
   @ViewChild("search")
   public searchElementRef: ElementRef;
 
   constructor(
     private mapsAPILoader: MapsAPILoader,
-    private ngZone: NgZone
+    private ngZone: NgZone,
+    private weatherService: WeatherService
   ) {};
 
   ngOnInit() {
@@ -31,16 +37,16 @@ export class LocationComponent implements OnInit {
         );
 
       this.getPosition();
-      console.log('moving')
+
       autocomplete.addListener('place_changed', () => {
         this.ngZone.run(() => {
           let place: google.maps.places.PlaceResult = autocomplete.getPlace();
 
-          console.log(place)
-
           if (place.geometry === undefined || place.geometry === null) {
             return;
           };
+          this.getWeather(place.geometry.location)
+
         });
       });
     });
@@ -50,10 +56,11 @@ export class LocationComponent implements OnInit {
     let geocoder = new google.maps.Geocoder()
     if(navigator.geolocation){
       navigator.geolocation.getCurrentPosition(position =>{
-        const latlng = new google.maps.LatLng(
+        const latlng  = new google.maps.LatLng(
           position.coords.latitude,
           position.coords.longitude
         )
+        this.getWeather(latlng)
         geocoder.geocode({ 'location': latlng}, (results, status) => {
           if (status !== google.maps.GeocoderStatus.OK) {
             alert(status);
@@ -67,5 +74,11 @@ export class LocationComponent implements OnInit {
         });
       });
     }
+  };
+
+  getWeather(latlng: google.maps.LatLng):void{
+    if (latlng){
+      this.weatherService.getWeather(latlng.lat(),latlng.lng())
+    };
   };
 };
