@@ -7,7 +7,7 @@ import { WeatherService } from './weather.service'
   templateUrl: './week-weather.component.html'
 })
 
-export class WeekWeatherComponent {
+export class WeekWeatherComponent implements OnInit {
   private weatherData: any={};
   private loadingInProgress: boolean = true;
 
@@ -21,4 +21,11 @@ export class WeekWeatherComponent {
         })
       });
     };
+
+  ngOnInit(){
+    this.weatherService.weatherDataPromise.then(data=>{
+      this.loadingInProgress = false;
+      this.weatherData=data
+    })
+  }
 }

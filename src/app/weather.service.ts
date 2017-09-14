@@ -9,7 +9,7 @@ import 'rxjs/add/operator/toPromise';
 
 @Injectable()
 export class WeatherService {
-  private weatherData : any={}
+  public weatherDataPromise : Promise<any>;
   private emitChangeWeatherData = new Subject<Promise<any>>();
   changedWeather$ = this.emitChangeWeatherData.asObservable();
 
@@ -32,7 +32,8 @@ export class WeatherService {
    return Promise.reject(error.message|| error)
   }
 
-  emitChange(change: Promise<any>): void {
-    this.emitChangeWeatherData.next(change);
+  emitChange(weatherPromise: Promise<any>): void {
+    this.weatherDataPromise = weatherPromise
+    this.emitChangeWeatherData.next(weatherPromise);
   }
 }
