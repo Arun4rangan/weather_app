@@ -1,4 +1,4 @@
-import { Component, ElementRef, NgZone, OnInit, ViewChild, Output, EventEmitter } from '@angular/core';
+import { Component, ElementRef, NgZone, OnInit, ViewChild, Output, EventEmitter, Input } from '@angular/core';
 import { Router } from '@angular/router';
 import { FormControl, FormsModule, ReactiveFormsModule } from "@angular/forms";
 
@@ -14,7 +14,7 @@ import {} from '@types/googlemaps';
 })
 
 export class LocationComponent implements OnInit {
-  private localAddress: string;
+  @Input() localAddress: string;
   private latlng: any = {};
   @Output() weatherData= new EventEmitter();
 
