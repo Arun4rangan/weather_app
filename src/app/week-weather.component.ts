@@ -8,7 +8,7 @@ import { WeatherService } from './weather.service'
 })
 
 export class WeekWeatherComponent implements OnInit {
-  private weatherData: any={};
+  @Input() weatherData: any={};
   private loadingInProgress: boolean = true;
 
   constructor(

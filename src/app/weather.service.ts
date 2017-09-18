@@ -9,8 +9,8 @@ import 'rxjs/add/operator/toPromise';
 
 @Injectable()
 export class WeatherService {
-  public weatherDataPromise : Promise<any>;
   private emitChangeWeatherData = new Subject<Promise<any>>();
+  weatherDataPromise : Promise<any>;
   changedWeather$ = this.emitChangeWeatherData.asObservable();
 
   private weatherUrl = 'https://cors-anywhere.herokuapp.com/https://api.darksky.net/forecast/46775eea3a83847258c84da2ff821095';
